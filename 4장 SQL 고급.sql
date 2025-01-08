@@ -92,5 +92,81 @@ INSERT INTO `Sales` (`uid`, `year`, `month`, `sale`) VALUES ('a108', '2020', 2, 
 
 SELECT * FROM `Sales`;
 
+#실습 4-3
+SELECT * FROM `Member` WHERE `name`='김유신';
+SELECT * FROM `Member` WHERE `pos` = '차장' AND dep=101;
+SELECT * FROM `Member` WHERE `pos` = '차장' OR dep=101;
+SELECT * FROM `Member` WHERE `name` != '김춘추';
+SELECT * FROM `Member` WHERE `name` <> '김춘추';
+SELECT * FROM `Member` WHERE `pos` = '사원' OR `pos` = '대리';
+SELECT * FROM `Member` WHERE `pos` IN ('사원', '대리');
+SELECT * FROM `Member` WHERE `dep` IN (101, 102, 103);
+SELECT * FROM `Member` WHERE `name` like '%신';
+SELECT * FROM `Member` WHERE `name` like '김%';
+SELECT * FROM `Member` WHERE `name` like '김__';
+SELECT * FROM `Member` WHERE `name` like '정_';
+SELECT * FROM `Member` WHERE `name` like '_성_';
+SELECT * FROM `Sales` WHERE `sale` > 50000;
+SELECT * FROM `Sales` WHERE `sale` > 50000 AND `sale` < 100000 AND `month`=1;
+SELECT * FROM `Sales` WHERE `sale` BETWEEN 50000 AND 100000;
+SELECT * FROM `Sales` WHERE `year` IN(2020);
+SELECT * FROM `Sales` WHERE `month` IN(1, 2);
 
+#실습 4-4
+SELECT * FROM `Sales` ORDER BY `sale`;
+SELECT * FROM `Sales` ORDER BY `sale` ASC;
+SELECT * FROM `Sales` ORDER BY `sale` DESC;
+SELECT * FROM `Member` ORDER BY `name`;
+SELECT * FROM `Member` ORDER BY `name` DESC;
+SELECT * FROM `Member` ORDER BY `rdate` ASC;
+SELECT * FROM `Sales` WHERE `sale` > 50000 ORDER BY `sale` DESC;
+SELECT * FROM `Sales` 
+WHERE `sale` > 50000 
+ORDER BY `year`, `month`, `sale` DESC;
 
+#실습 4-5
+SELECT * FROM `Sales` LIMIT 3;
+SELECT * FROM `Sales` LIMIT 0, 3;
+SELECT * FROM `Sales` LIMIT 1, 2;
+SELECT * FROM `Sales` LIMIT 5, 3;
+SELECT * FROM `Sales` ORDER BY `sale` DESC LIMIT 3, 5;
+SELECT * FROM `Sales` WHERE `sale` < 50000 ORDER BY `sale` DESC LIMIT 3;
+SELECT * FROM `Sales` 
+WHERE `sale` > 50000 
+ORDER BY `year` DESC, month, `sale` DESC 
+LIMIT 5;
+
+#실습 4-6
+SELECT SUM(`sale`) AS `합계` FROM `Sales`;
+SELECT AVG(`sale`) AS `평균` FROM `Sales`;
+SELECT MAX(`sale`) AS `최대값` FROM `Sales`;
+SELECT MIN(`sale`) AS `최소값` FROM `Sales`;
+SELECT CEILING(1.2);
+SELECT CEILING(1.8);
+SELECT FLOOR(1.2);
+SELECT FLOOR(1.8);
+SELECT ROUND(1.2);
+SELECT ROUND(1.8);
+SELECT RAND();
+SELECT CEILING(RAND()*6);
+SELECT COUNT(`sale`) AS `갯수` FROM `Sales`;
+SELECT COUNT(*) AS `갯수` from `Sales`;
+SELECT LEFT('HELLOWORLD', 5);
+SELECT RIGHT('HELLOWORLD', 5);
+SELECT SUBSTRING('HELLOWORLD', 6, 5);
+SELECT CONCAT('HELLO', 'WORLD');
+
+SELECT CURDATE();
+SELECT CURTIME();
+SELECT NOW();
+INSERT INTO `Member` VALUES('a112', '유관순', '010-1234-1012', '대리', 107, NOW());
+
+#실습 4-7; 2018년 1월 매출의 총합 구하기
+SELECT SUM(`sale`) AS `총합` FROM `Sales` WHERE `year` = 2018 AND `month` = 1;
+
+#실습 4-8; 2019년 2월에 5만원 이상 매출에 대한 총합과 평균
+SELECT SUM(`sale`) AS `총합` FROM `Sales` WHERE `year` = 2019 AND `month` = 2 AND `sale` > 50000;
+SELECT AVG(`sale`) AS `평균` FROM `Sales` WHERE `year` = 2019 AND `month` = 2 AND `sale` > 50000;
+
+#실습 4-9; 2020년 전체 매출 가운데 최저, 최고 매출 구하기
+SELECT MAX(`sale`) AS `최고매출`, MIN(`sale`) AS `최저매출` FROM `Sales` WHERE `year` = 2020;
