@@ -170,3 +170,123 @@ SELECT AVG(`sale`) AS `평균` FROM `Sales` WHERE `year` = 2019 AND `month` = 2 
 
 #실습 4-9; 2020년 전체 매출 가운데 최저, 최고 매출 구하기
 SELECT MAX(`sale`) AS `최고매출`, MIN(`sale`) AS `최저매출` FROM `Sales` WHERE `year` = 2020;
+
+#실습 4-10
+SELECT @@sql_mode;
+
+SET SESSION sql_mode = 'STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
+
+
+SELECT * FROM `Sales` GROUP BY `uid`;
+SELECT * FROM `Sales` GROUP BY `year`;
+SELECT * FROM `Sales` GROUP BY `uid`, `year`;
+SELECT `uid`, COUNT(*) AS `건수` FROM `Sales` GROUP BY `uid`;
+SELECT `uid`, SUM(`sale`) AS `합계` FROM `Sales` GROUP BY `uid`;
+select `uid`, avg(`sale`) as `평균` from `Sales` group by uid;
+
+select `uid`, `year`, sum(`sale`) as `합계` from `Sales` group by `uid`, `year`;
+select `uid`, `year`, sum(`sale`) as `합계` from `Sales` group by `uid`, `year` order by `year` asc, `합계` desc;
+
+#실습 4-11
+select `uid` , sum(`sale`) as `합계` from `Sales` group by `uid` having `합계` >= 200000;
+select `uid`, `year`, sum(`sale`) as `합계` 
+from `Sales` 
+where `sale` >= 100000 
+group by `uid`, `year` 
+having `합계` >= 200000 
+order by `합계` desc;
+
+#실습 4-12
+create table `Sales2` like `Sales`;
+insert into `Sales2` select * from `Sales`;
+set sql_safe_updates = 0;
+update `Sales2` set `year` = `year` + 3;
+
+select * from `Sales2`;
+
+select * from `Sales`
+union
+select * from `Sales2`;
+
+select * from `Sales` where `sale` >= 100000
+union
+select * from `Sales2` where `sale` >= 100000;
+
+select `uid`, `year`, `sale` from `Sales`
+union
+select `uid`, `year`, `sale` from `Sales2`;
+
+select `uid`, `year`, sum(`sale`) as `합계`
+from `Sales`
+group by `uid`, `year`
+union
+select `uid`, `year`, sum(`sale`) as `합계`
+from `Sales2`
+group by `uid`, `year`
+order by `year` asc, `합계` desc;
+;
+
+#실습 4-12
+SELECT * FROM `Sales` INNER JOIN `Member` ON `Sales`.`uid` = `Member`.`uid`;
+
+SELECT * FROM `Member` AS a
+JOIN `Department` AS b
+ON a.dep = b.depNo;
+
+#실습 4-13
+SELECT * FROM `Sales` AS a
+JOIN `Member` AS b 
+USING(`uid`);
+
+SELECT * FROM `Sales` AS a
+JOIN `Member` AS b on a.uid = b.uid
+JOIN `Department` as c on b.dep = c.depNo;
+
+#실습 4-14
+INSERT INTO `Sales` (`uid`, `year`, `month`, `sale`) VALUES ('a201', 2020, 2, 15500);
+SELECT * FROM `Sales` as a
+RIGHT JOIN `Member` as b on a.uid = b.uid;
+
+SELECT * FROM `Sales` as a
+LEFT JOIN `Member` as b on a.uid = b.uid;
+
+#실습 4-15
+/*(`Member` as a JOIN `Department` as b ON a.dep = b.depNo)의 결과값에서 SELECT a.uid, a.name, a.pos, b.name을 추출.*/
+SELECT a.uid, a.name, a.pos, b.name FROM `Member` as a
+JOIN `Department` as b on a.dep = b.depNo; 
+
+#실습 4-16
+SELECT 
+	SUM(`sale`) as `김유신 2019 매출` 
+FROM `sales` as a join `member` as b 
+on a.uid = b.uid
+where `name` = '김유신' AND 
+`year` = 2019;
+
+#실습 4-17
+SELECT 
+	SUM(`sale`) AS `매출합`, 
+	b.`name`, 
+	c.`name`, 
+	a.`year` 
+FROM `Sales` AS a 
+JOIN `Member` AS b ON a.`uid` = b.`uid`
+JOIN `Department` AS c ON b.`dep` = c.`depNo` 
+WHERE `sale` > 50000 AND `year` = 2019
+GROUP BY a.`uid`
+HAVING `매출합` >= 100000
+ORDER BY `매출합` DESC;
+
+#실습 4-17-1: 
+SELECT 
+    b.name,
+    c.name,
+    a.year,
+    SUM(`sale`) as "매출합"
+FROM `Sales` as a 
+join `Member` as b on a.uid = b.uid 
+join `Department` as c on b.dep = c.depNo
+where year = 2018 
+group by a.uid
+order by `sale` ASC
+;
